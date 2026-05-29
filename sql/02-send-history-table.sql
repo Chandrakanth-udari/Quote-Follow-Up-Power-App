@@ -2,18 +2,32 @@
 -- Audit log of every follow-up email sent from the app: who it went to, the
 -- subject/body, whether it was a test send, and who/when it was sent.
 
-SELECT TOP (1000)
-       [history_id]
-      ,[quote_num]
-      ,[estimator_email]
-      ,[estimator_name]
-      ,[recipient_email]
-      ,[recipient_name]
-      ,[subject]
-      ,[body_text]
-      ,[is_test_mode]
-      ,[sent_by_email]
-      ,[sent_by_name]
-      ,[sent_utc]
-      ,[order_id]
-  FROM [ClientDW].[dbo].[quote_followup_send_history];
+CREATE TABLE dbo.quote_followup_send_history (
+
+    history_id       INT IDENTITY(1,1) PRIMARY KEY,
+
+    quote_num        VARCHAR(100),
+
+    estimator_email  VARCHAR(255),
+
+    estimator_name   VARCHAR(255),
+
+    recipient_email  VARCHAR(255),
+
+    recipient_name   VARCHAR(255),
+
+    subject          NVARCHAR(500),
+
+    body_text        NVARCHAR(MAX),
+
+    is_test_mode     BIT DEFAULT 0,
+
+    sent_by_email    VARCHAR(255),
+
+    sent_by_name     VARCHAR(255),
+
+    sent_utc         DATETIME DEFAULT GETUTCDATE(),
+
+    order_id         INT
+
+);
