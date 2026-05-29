@@ -4,9 +4,40 @@ A Power Apps Canvas app that surfaces aging, un-converted quotes and lets estima
 
 > **Client engagement.** Built as a production solution for a client in the commercial door & hardware manufacturing industry. Customer names, estimator names, and email addresses shown in the screenshots have been replaced with fictional equivalents to protect client confidentiality.
 
-## Overview
+## The Problem
 
-Quotes that sit for two weeks without converting are where revenue quietly leaks. This app gives each estimator a live worklist of their own quotes that are 14+ days old and still open, ranked by value, so nothing slips — and makes the follow-up itself a one-screen action.
+A quote goes out, the customer goes quiet, and two weeks later nobody remembers to chase it. That silence is where revenue leaks — a quote that just needed a nudge converts to a competitor or to nothing. Estimators had no single, trustworthy list of *their own* quotes that had gone cold, so following up depended on memory and good intentions. And when someone did follow up, writing the email from scratch each time was friction that made "I'll do it later" the default.
+
+## The Solution
+
+Turn following up from a chore into a one-screen action:
+
+1. A SQL view builds each estimator's **live worklist** — only quotes that are **14+ days old and still open** (a quote number exists but no order yet), joined to customer, sales rep, and estimator detail.
+2. The estimator opens the app and filters to **their own quotes**, narrowing by **age** (≤ 60 days / all 14+ days) and **value tier** (High / Medium / Low) so the highest-value cold quotes rise to the top.
+3. They **tick the quotes** to chase and open the compose screen, where an **AI-drafted follow-up body** is generated — editable before sending.
+4. **Power Automate sends** the emails, and every send (including test sends) is **logged to a history table** — recipient, subject, body, sender, timestamp — so there's a clear audit of who was contacted and when.
+
+The result: cold quotes get worked systematically instead of slipping through the cracks.
+
+## How It Works
+
+```
+ Estimator (app)                          Back-office data
+ ┌──────────────────────────────┐        ┌──────────────────────────────┐
+ │ Quote Follow-Up App           │  read  │ SQL: vw_quote_followup_14days │
+ │ (Power Apps Canvas)            ├───────►│  (open quotes 14+ days old)   │
+ │                               │        └───────────────────────────────┘
+ │  filter by estimator / age /  │
+ │  value → select cold quotes   │        ┌──────────────────────────────┐
+ │  → AI-drafted email → send    ├───────►│ Power Automate → sends email  │
+ └──────────────┬───────────────┘  trigger└───────────────┬──────────────┘
+                │ log send                                 │
+                ▼                                          ▼
+        ┌──────────────────────────────────┐         Customer receives
+        │ SQL: quote_followup_send_history  │         follow-up email
+        │  (audit: who/what/when)           │
+        └──────────────────────────────────┘
+```
 
 ## Key Features
 
