@@ -21,23 +21,7 @@ The result: cold quotes get worked systematically instead of slipping through th
 
 ## How It Works
 
-```
- Estimator (app)                          Back-office data
- ┌──────────────────────────────┐        ┌──────────────────────────────┐
- │ Quote Follow-Up App           │  read  │ SQL: vw_quote_followup_14days │
- │ (Power Apps Canvas)            ├───────►│  (open quotes 14+ days old)   │
- │                               │        └───────────────────────────────┘
- │  filter by estimator / age /  │
- │  value → select cold quotes   │        ┌──────────────────────────────┐
- │  → AI-drafted email → send    ├───────►│ Power Automate → sends email  │
- └──────────────┬───────────────┘  trigger└───────────────┬──────────────┘
-                │ log send                                 │
-                ▼                                          ▼
-        ┌──────────────────────────────────┐         Customer receives
-        │ SQL: quote_followup_send_history  │         follow-up email
-        │  (audit: who/what/when)           │
-        └──────────────────────────────────┘
-```
+![Quote follow-up workflow](screenshots/00-quote-follow-up-workflow.png)
 
 ## Key Features
 
